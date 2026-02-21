@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
 #include "Asteroid.hpp"
+#include "Enemy.hpp"
 #include "AEntity.hpp"
 #include <vector>
 using namespace std;
@@ -46,6 +47,7 @@ int main() {
     
     int h, w;
     getmaxyx(stdscr, h, w);
+	(void)h; 
     
     int w_game = 40;
     int h_game = 40;
@@ -68,7 +70,8 @@ int main() {
     Aster *aster = new Aster(); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
     g_entities.push_back(aster);
-
+    Enemy *enemy = new Enemy('W', "red", 10, 0, 24, 5, 10);
+    g_entities.push_back(enemy);
     while (g_running) {
         auto frameStart = game_clock::now();
 
