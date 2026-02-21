@@ -1,15 +1,15 @@
 NAME = Shmup
 
-SRC =	main.cpp
+SRC = main.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
-CPP = c++ -Wall -Wextra -Werror -g
+CPP = c++ -Wall -Wextra -Werror 
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CPP) $(OBJ) -o $(NAME)
+	@$(CPP) $(OBJ) -o $(NAME) -lncurses -g
 
 %.o: %.cpp
 	@$(CPP) -c $< -o $@
