@@ -1,5 +1,10 @@
 #include "Player.hpp"
+#include "Bullet.hpp"
 #include <iostream>
+#include <vector>
+
+extern vector<AEntity*> g_entities;
+extern bool g_running;
 
 Player::Player()
     : AEntity('@', "green", 1, 1, 8, 10), score(0), playerNum(1)
@@ -23,7 +28,7 @@ void Player::update(float deltaTime)
     int vx = 0, vy = 0;
     int ch;
     while ((ch = getch()) != ERR) {
-        if (ch == 'q') { kill(); return; }
+        if (ch == 'q') { g_running = false; return; }
         if (playerNum == 1) {
             if (ch == 'a')           vx = -1;
             else if (ch == 'd')      vx =  1;
@@ -52,6 +57,10 @@ void Player::update(float deltaTime)
 
 void Player::shoot()
 {
+    Bullet *b = new Bullet();
+    b->setPos(getPosX(), getPosY());
+    b->setVel(0, -1); // shoot upwards
+    g_entities.push_back(b); // add bullet to global entity list (to be updated and rendered by game loop)
     // Create a new bullet entity (to be added to the entity list by the game loop)
     // Bullet updateInterval = 4 (updates every 4 frames ~= 16 times/sec at 60fps)
 }

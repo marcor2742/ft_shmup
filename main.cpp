@@ -3,12 +3,18 @@
 #include <chrono>
 #include <unistd.h>
 #include "Player.hpp"
+#include "Bullet.hpp"
+#include "AEntity.hpp"
+#include <vector>
 using namespace std;
 using game_clock = std::chrono::steady_clock;
 
 // target: 60 frames per second
 static const int   FPS        = 60;
 static const long  FRAME_US   = 1000000 / FPS; // microseconds per frame (~16666 us)
+
+vector<AEntity*> g_entities;
+bool g_running = false;
 
 // defined in ncurses
 // COLOR_BLACK   0
@@ -53,26 +59,42 @@ int main() {
     
     
     int frame = 0;
-    bool running = true;
-    Player player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    g_running = true;
+    Player *player= new Player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    g_entities.push_back(player);
 
-    while (running) {
+    while (g_running) {
         auto frameStart = game_clock::now();
 
-        // --- input + update (player drains getch buffer internally) ---
-        if (frame % player.getUpdateInterval() == 0)
-            player.update(0.0f);
-        if (!player.getIsAlive()) running = false;
+        size_t size = g_entities.size();
+        for (size_t i = 0; i < size; i++) {
+            AEntity *e = g_entities[i];
+            if (frame % e->getUpdateInterval() == 0)
+                e->update(0.0f);
+        }
+
+        for (auto it = g_entities.begin(); it != g_entities.end(); ) {
+            if (!(*it)->getIsAlive()) {
+                delete *it;
+                it = g_entities.erase(it);
+            } else {
+                ++it;
+            }
+        }
 
         // --- render ---
         werase(winGame);
         werase(winScore);
 
-        player.render(winGame);
+        player->render(winGame);
+        for (AEntity *e : g_entities) {
+            e->render(winGame);
+        }
+
 
         box(winGame, 0, 0);
         mvwprintw(winGame,  1, 2, "frame %d", frame);
-        mvwprintw(winScore, 1, 2, "score: %d", player.getScore());
+        mvwprintw(winScore, 1, 2, "score: %d", player->getScore());
         wrefresh(winGame);
         wrefresh(winScore);
 
@@ -85,7 +107,7 @@ int main() {
         ++frame;
     }
     delwin(winGame);
-    // delwin(winScore);
+    delwin(winScore);
     curs_set(1);
     endwin();
 }
