@@ -5,6 +5,22 @@
 #include <string>
 #include <ncurses.h>
 #include "colours.h"
+
+enum
+{
+	GREY = 10,
+	B_YELLOW,
+	B_GREEN,
+};
+
+enum
+{
+	PAIR_GREY = 10,
+	PAIR_YELLOW,
+	PAIR_GREEN,
+	PAIR_DEF
+};
+
 using namespace std;
 
 class AEntity

@@ -58,7 +58,7 @@ void Player::update(float deltaTime)
 void Player::shoot()
 {
     Bullet *b = new Bullet();
-    b->setPos(getPosX(), getPosY());
+    b->setPos(getPosX(), getPosY() - 1);
     b->setVel(0, -1); // shoot upwards
     g_entities.push_back(b); // add bullet to global entity list (to be updated and rendered by game loop)
     // Create a new bullet entity (to be added to the entity list by the game loop)
@@ -67,13 +67,23 @@ void Player::shoot()
 
 void Player::render(WINDOW *win) const
 {
-    mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+    if (has_colors() != FALSE)
+	{
+        start_color();
+        use_default_colors();   // permette di usare -1 come colore di default
+
+        init_pair(1, COLOR_MAGENTA, -1);
+
+        wattron(win, COLOR_PAIR(1));
+        mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+        wattroff(win, COLOR_PAIR(1));
+	}
+    // Handle collision with other entities (e.g., enemies, power-ups)
 }
 
 void Player::onCollision(AEntity &other) 
 {
     (void)other;
-    // Handle collision with other entities (e.g., enemies, power-ups)
 }
 
 void Player::increaseScore(int amount) { score += amount; }

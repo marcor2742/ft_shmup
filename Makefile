@@ -1,6 +1,6 @@
 NAME = ft_shmup
 
-SRC = main.cpp AEntity.cpp Player.cpp Bullet.cpp
+SRC = main.cpp AEntity.cpp Player.cpp Bullet.cpp Asteroid.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

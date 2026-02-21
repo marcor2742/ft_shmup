@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "Player.hpp"
 #include "Bullet.hpp"
+#include "Asteroid.hpp"
 #include "AEntity.hpp"
 #include <vector>
 using namespace std;
@@ -25,6 +26,8 @@ bool g_running = false;
 // COLOR_MAGENTA 5
 // COLOR_CYAN    6
 // COLOR_WHITE   7
+
+
 
 //keyboard input
 // KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
@@ -62,6 +65,9 @@ int main() {
     g_running = true;
     Player *player= new Player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
     g_entities.push_back(player);
+    Aster *aster = new Aster(); // AsterNum=1, spawn at (2,2)
+    aster->setVel(0, 1);
+    g_entities.push_back(aster);
 
     while (g_running) {
         auto frameStart = game_clock::now();
