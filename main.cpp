@@ -2,11 +2,30 @@
 #include <ncurses.h>
 using namespace std;
 
+// defined in ncurses
+// COLOR_BLACK   0
+// COLOR_RED     1
+// COLOR_GREEN   2
+// COLOR_YELLOW  3
+// COLOR_BLUE    4
+// COLOR_MAGENTA 5
+// COLOR_CYAN    6
+// COLOR_WHITE   7
+
+//keyboard input
+// KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
+//wasd: w=119, a=97, s=115, d=100
+// shoot (space and keypad 0): 32 and 48
+
+//controlla se ci sono piu player con lo stesso playerNum. e non deve essere maggiore di 2
+
 int main() {
     initscr();
 
-    noecho();
-    curs_set(0);
+    noecho(); //don't print input characters
+    nodelay(stdscr, TRUE); // make getch non-blocking
+    keypad(stdscr, TRUE); // enable arrow keys
+    curs_set(0); // hide cursor
     
     int h, w;
     getmaxyx(stdscr, h, w);
