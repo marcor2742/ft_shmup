@@ -2,66 +2,73 @@
 #include <iostream>
 
 Player::Player()
-    : AEntity('@', "green", 1, 1, 1, 10), score(0), bulletCooldown(0), playerNum(1)
+    : AEntity('@', "green", 1, 1, 8, 10), score(0), playerNum(1)
 {}
 
 Player::Player(Player const &src)
-    : AEntity(src), score(src.score), bulletCooldown(src.bulletCooldown), playerNum(src.playerNum)
+    : AEntity(src), score(src.score), playerNum(src.playerNum)
 {}
 
-Player::Player(int bulletCooldown, short playerNum, char entityChar, string color,
-           int x, int y, int speed, int health)
-    : AEntity(entityChar, color, x, y, speed, health), score(0), bulletCooldown(bulletCooldown), playerNum(playerNum)
+Player::Player(short playerNum, char entityChar, string color,
+           int x, int y, int updateInterval, int health)
+    : AEntity(entityChar, color, x, y, updateInterval, health), score(0), playerNum(playerNum)
 {}
 
 Player::~Player() {}
 
-void Player::update(float deltaTime) override
+void Player::update(float deltaTime)
 {
-    if (playerNum == 1) {
-        // Handle input for player 1 (e.g., WASD)
-        switch (getch()) {
-            case 'w': setVel(0, -1); break;
-            case 'a': setVel(-1, 0); break;
-            case 's': setVel(0, 1); break;
-            case 'd': setVel(1, 0); break;
-            case ' ': shoot(); break; // Space to shoot
-        }
-    } else if (playerNum == 2) {
-        // Handle input for player 2 (e.g., arrow keys)
-        switch (getch()) {
-            case KEY_UP: setVel(0, -1); break;
-            case KEY_LEFT: setVel(-1, 0); break;
-            case KEY_DOWN: setVel(0, 1); break;
-            case KEY_RIGHT: setVel(1, 0); break;
-            case '0': shoot(); break; // Keypad 0 to shoot
+    (void)deltaTime;
+
+    int vx = 0, vy = 0;
+    int ch;
+    while ((ch = getch()) != ERR) {
+        if (ch == 'q') { kill(); return; }
+        if (playerNum == 1) {
+            if (ch == 'a')           vx = -1;
+            else if (ch == 'd')      vx =  1;
+            else if (ch == 'w')      vy = -1;
+            else if (ch == 's')      vy =  1;
+            else if (ch == ' ')      shoot();
+        } else if (playerNum == 2) {
+            if (ch == KEY_LEFT)      vx = -1;
+            else if (ch == KEY_RIGHT) vx =  1;
+            else if (ch == KEY_UP)   vy = -1;
+            else if (ch == KEY_DOWN) vy =  1;
+            else if (ch == '0')      shoot();
         }
     }
+    setVel(vx, vy);
+
+    // move and clamp inside game area (border = 1 cell)
+    int nx = getPosX() + vx;
+    int ny = getPosY() + vy;
+    if (nx < 1)  nx = 1;
+    if (ny < 1)  ny = 1;
+    if (nx > 38) nx = 38;  // w_game - 2
+    if (ny > 38) ny = 38;  // h_game - 2
+    setPos(nx, ny);
 }
 
 void Player::shoot()
 {
-    if (bulletCooldown <= 0) {
-        // Create a new bullet entity and set its velocity
-        // Reset bullet cooldown
-        bulletCooldown = 20; // Example cooldown duration
-    }
+    // Create a new bullet entity (to be added to the entity list by the game loop)
+    // Bullet updateInterval = 4 (updates every 4 frames ~= 16 times/sec at 60fps)
 }
 
-void Player::render(WINDOW *win) const override
+void Player::render(WINDOW *win) const
 {
-    // imposta colori e funzione per spostare char in posizione
+    mvwaddch(win, getPosY(), getPosX(), getEntityChar());
 }
 
-void Player::onCollision(AEntity &other) override 
+void Player::onCollision(AEntity &other) 
 {
+    (void)other;
     // Handle collision with other entities (e.g., enemies, power-ups)
 }
 
 void Player::increaseScore(int amount) { score += amount; }
 
 int Player::getScore() const { return score; }
-int Player::getBulletCooldown() const { return bulletCooldown; }
 
 void Player::setScore(int newScore) { score = newScore; }
-void Player::setBulletCooldown(int cooldown) { bulletCooldown = cooldown; }

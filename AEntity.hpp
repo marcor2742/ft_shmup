@@ -15,8 +15,8 @@ protected:
 
 	int	start_x, start_y;	// spawn position
 	int	pos_x, pos_y;		// current position
-	int	vel_x, vel_y;		// velocity vector (direction * speed)
-	int	speed;
+	int	vel_x, vel_y;		// velocity vector (direction)
+	int	updateInterval;		// update every N frames
 
 	int	health;		// current HP
 	int	maxHealth;	// max HP (useful for bosses / health bars)
@@ -28,7 +28,7 @@ public:
 	AEntity();
 	AEntity(AEntity const &aentity);
 	AEntity(char entityChar, string const &color,
-		int x, int y, int speed, int health, int scoreValue = 0);
+		int x, int y, int updateInterval, int health, int scoreValue = 0);
 	virtual ~AEntity();
 
 	// --- Pure virtual: every entity must implement these ---
@@ -45,7 +45,7 @@ public:
 	int		getPosY() const;
 	int		getVelX() const;
 	int		getVelY() const;
-	int		getSpeed() const;
+	int		getUpdateInterval() const;
 	int		getHealth() const;
 	int		getMaxHealth() const;
 	int		getScoreValue() const;
@@ -58,6 +58,7 @@ public:
 	void	setVel(int vx, int vy);
 	void	setHealth(int h);
 	void	setAlive(bool alive);
+	void	setUpdateInterval(int n);
 };
 
 #endif

@@ -1,6 +1,14 @@
 #include <iostream>
 #include <ncurses.h>
+#include <chrono>
+#include <unistd.h>
+#include "Player.hpp"
 using namespace std;
+using game_clock = std::chrono::steady_clock;
+
+// target: 60 frames per second
+static const int   FPS        = 60;
+static const long  FRAME_US   = 1000000 / FPS; // microseconds per frame (~16666 us)
 
 // defined in ncurses
 // COLOR_BLACK   0
@@ -44,13 +52,37 @@ int main() {
     
     
     
-    while (true) {
-        wborder(winGame, ACS_VLINE,  ACS_VLINE, ACS_HLINE, ACS_HLINE, ACS_ULCORNER, ACS_URCORNER, ACS_LLCORNER, ACS_LRCORNER);
+    int frame = 0;
+    bool running = true;
+    Player player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+
+    while (running) {
+        auto frameStart = game_clock::now();
+
+        // --- input + update (player drains getch buffer internally) ---
+        if (frame % player.getUpdateInterval() == 0)
+            player.update(0.0f);
+        if (!player.getIsAlive()) running = false;
+
+        // --- render ---
+        werase(winGame);
+        werase(winScore);
+
+        player.render(winGame);
+
         box(winGame, 0, 0);
-        mvwprintw(winGame, 1, 2, "wingame %dx%d @ (%d,%d)", h_game, w_game, 0, 0);
-        mvwprintw(winScore, 1, 2, "winscore %dx%d @ (%d,%d)", h_game, w-w_game, 0, w_game);  
+        mvwprintw(winGame,  1, 2, "frame %d", frame);
+        mvwprintw(winScore, 1, 2, "score: %d", player.getScore());
         wrefresh(winGame);
         wrefresh(winScore);
+
+        // --- sleep for remainder of frame ---
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+            game_clock::now() - frameStart).count();
+        if (elapsed < FRAME_US)
+            usleep((useconds_t)(FRAME_US - elapsed));
+
+        ++frame;
     }
     delwin(winGame);
     // delwin(winScore);
