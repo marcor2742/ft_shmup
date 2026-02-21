@@ -3,37 +3,61 @@
 
 #include <iostream>
 #include <string>
+#include <ncurses.h>
 #include "colours.h"
 using namespace std;
-
-class ICharacter;
 
 class AEntity
 {
 protected:
-	string entityChar;
-	string color;
-	
-	int start_x, start_y;
-	int pos_x, pos_y;
+	char	entityChar;	// character displayed on screen
+	string	color;
 
-	int speed;
-	
-	int health; //quantity of hits the entity can take before being destroyed
-	bool isAlive;
+	int	start_x, start_y;	// spawn position
+	int	pos_x, pos_y;		// current position
+	int	vel_x, vel_y;		// velocity vector (direction * speed)
+	int	speed;
 
+	int	health;		// current HP
+	int	maxHealth;	// max HP (useful for bosses / health bars)
+	bool	isAlive;
 
-
-	//update movement
-	//check collision
+	int	scoreValue;	// points awarded to player on kill
 
 public:
 	AEntity();
 	AEntity(AEntity const &aentity);
-	// AEntity &operator=(AEntity const &aentity);
-	AEntity(string const &type);
+	AEntity(char entityChar, string const &color,
+		int x, int y, int speed, int health, int scoreValue = 0);
 	virtual ~AEntity();
 
+	// --- Pure virtual: every entity must implement these ---
+	virtual void	update(float deltaTime) = 0;
+	virtual void	render(WINDOW *win) const = 0;
+	virtual void	onCollision(AEntity &other) = 0;
+
+	// --- Virtual with shared default behaviour ---
+	virtual void	takeDamage(int dmg);
+	virtual void	kill();
+
+	// --- Getters ---
+	int		getPosX() const;
+	int		getPosY() const;
+	int		getVelX() const;
+	int		getVelY() const;
+	int		getSpeed() const;
+	int		getHealth() const;
+	int		getMaxHealth() const;
+	int		getScoreValue() const;
+	bool	getIsAlive() const;
+	char	getEntityChar() const;
+	const string	&getColor() const;
+
+	// --- Setters ---
+	void	setPos(int x, int y);
+	void	setVel(int vx, int vy);
+	void	setHealth(int h);
+	void	setAlive(bool alive);
 };
 
 #endif

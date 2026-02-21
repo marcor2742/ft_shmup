@@ -1,4 +1,4 @@
-NAME = Shmup
+NAME = ft_shmup
 
 SRC = main.cpp
 
