@@ -6,6 +6,7 @@
 #include <ncurses.h>
 #include "colours.h"
 
+//init_color
 enum
 {
 	GREY = 10,
@@ -13,6 +14,7 @@ enum
 	B_GREEN,
 };
 
+//init_pair
 enum
 {
 	PAIR_GREY = 10,

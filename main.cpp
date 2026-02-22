@@ -34,8 +34,6 @@ vector<AEntity*> g_asteroids;
 // COLOR_CYAN    6
 // COLOR_WHITE   7
 
-
-
 //keyboard input
 // KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 //wasd: w=119, a=97, s=115, d=100
@@ -76,7 +74,7 @@ int main() {
     g_running = true;
     Player *player= new Player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
     g_entities.push_back(player);
-    Aster *aster = new Aster(); // AsterNum=1, spawn at (2,2)
+    Aster *aster = new Aster('O', "grey", 20, 4, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
     g_entities.push_back(aster);
     Enemy *enemy = new Enemy('W', "red", 10, 0, 24, 5, 10);
