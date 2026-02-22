@@ -86,7 +86,7 @@ int main() {
     
     int frame = 0;
     g_running = true;
-    Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    Player *player= new Player(1, '@', PAIR_GREEN, w_game / 2, h_game - 4, 8, 10); // playerNum=1, spawn at (2,2)
     // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
     // (void)player2;
     // g_entities.push_back(player);
@@ -150,16 +150,17 @@ int main() {
         // for (AEntity *e : g_entities) {
         //     e->render(winGame);
         // }
+        renderEntities(g_background, winGame); // render background first
         for (auto group : groups) {
-            if (!group) continue;
+            if (!group || group == &g_background) continue;
             renderEntities(*group, winGame);
         }
-        renderEntities(g_players, winGame); // render player in front of everything else
+        // renderEntities(g_players, winGame); // render player in front of everything else
 
         box(winGame, 0, 0);
-        mvwprintw(winGame,  1, 2, "frame %d", frame);
-        mvwprintw(winScore, 1, 2, "score: %d", player->getScore());
-		mvwprintw(winScore, 2, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
+        mvwprintw(winScore,  1, 2, "frame %d", frame);
+        mvwprintw(winScore, 2, 2, "score: %d", player->getScore());
+		mvwprintw(winScore, 3, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
         wrefresh(winGame);
         wrefresh(winScore);
 
