@@ -6,7 +6,7 @@ extern bool g_running;
 extern vector<AEntity*> g_players;
 
 Player::Player()
-    : AEntity('@', PAIR_BR_GREEN, 1, 1, 8, 10), score(0), playerNum(1)
+    : AEntity('@', PAIR_BR_GREEN, 1, 1, 8, 10), score(0), playerNum(1), ship_type(" A \n/|\\")
 {
     if (playerNum < 1 || playerNum > 2)
         throw std::runtime_error("Invalid player number (must be 1 or 2)");
@@ -94,7 +94,9 @@ void	Player::render(WINDOW *win) const
     int color = getColor();
 
 	wattron(win, COLOR_PAIR(color));
-	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+    mvwprintw(win, getPosY(), getPosX(), "A");
+    mvwprintw(win, getPosY()+ 1, getPosX() - 1, "/|\\");
+	//mvwaddch(win, getPosY(), getPosX(), getEntityChar());
 	wattroff(win, COLOR_PAIR(color));
 }
 
@@ -106,5 +108,7 @@ void Player::onCollision(AEntity &other)
 void Player::increaseScore(int amount) { score += amount; }
 
 int Player::getScore() const { return score; }
+
+string Player::getString() const { return ship_type; }
 
 void Player::setScore(int newScore) { score = newScore; }

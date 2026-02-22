@@ -53,21 +53,23 @@ void	init_colors(void)
 		init_color(ORANGE, 1000, 600, 200);
 		init_color(SKY_BLUE, 0, 1000, 1000);
 		init_color(DR_GRAY, 0, 300, 600);
+		init_color(L_RED, 1000, 600, 600);
 
-		init_pair(PAIR_BR_GREEN, BR_GREEN, -1);
-		init_pair(PAIR_BR_PINK, BR_PINK, -1);
-		init_pair(PAIR_L_PINK, L_PINK, -1);
-		init_pair(PAIR_ORANGE, ORANGE, -1);
-		init_pair(PAIR_SKY_BLUE, SKY_BLUE, -1);
-		init_pair(PAIR_GREY, GREY, -1);
-		init_pair(PAIR_RED, COLOR_RED, -1);
-		init_pair(PAIR_GREEN, COLOR_GREEN, -1);
-		init_pair(PAIR_YELLOW, COLOR_YELLOW, -1);
-		init_pair(PAIR_BLUE, COLOR_BLUE, -1);
-		init_pair(PAIR_MAGENTA, COLOR_MAGENTA, -1);
-		init_pair(PAIR_CYAN, COLOR_CYAN, -1);
-		init_pair(PAIR_DEF, COLOR_WHITE,-1);
-		init_pair(PAIR_DR_GRAY, DR_GRAY, -1);
+		init_pair(PAIR_BR_GREEN, BR_GREEN, 0);
+		init_pair(PAIR_BR_PINK, BR_PINK, 0);
+		init_pair(PAIR_L_PINK, L_PINK, 0);
+		init_pair(PAIR_ORANGE, ORANGE, 0);
+		init_pair(PAIR_SKY_BLUE, SKY_BLUE, 0);
+		init_pair(PAIR_GREY, GREY, 0);
+		init_pair(PAIR_RED, COLOR_RED, 0);
+		init_pair(PAIR_L_RED, COLOR_RED, 0);
+		init_pair(PAIR_GREEN, COLOR_GREEN, 0);
+		init_pair(PAIR_YELLOW, COLOR_YELLOW, 0);
+		init_pair(PAIR_BLUE, COLOR_BLUE, 0);
+		init_pair(PAIR_MAGENTA, COLOR_MAGENTA, 0);
+		init_pair(PAIR_CYAN, COLOR_CYAN, 0);
+		init_pair(PAIR_DEF, COLOR_WHITE,0);
+		init_pair(PAIR_DR_GRAY, DR_GRAY, 0);
 	}
 }
 

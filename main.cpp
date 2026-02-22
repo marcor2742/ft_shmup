@@ -84,7 +84,7 @@ int main() {
     
     int frame = 0;
     g_running = true;
-    Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    Player *player= new Player(1, '@', PAIR_YELLOW, 20, 37, 8, 10); // playerNum=1, spawn at (2,2)
     // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
     // (void)player2;
     // g_entities.push_back(player);
@@ -191,17 +191,30 @@ void createBackground(int h_game, int w_game)
 
 void createRandomEntity(int h_game, int w_game) {
     (void)h_game; 
-    int r = rand() % 100;
-    if (r < 3) { // 5% chance to spawn an enemy
+    int r = rand() % 500;
+    if (r < 15) { // 5% chance to spawn an enemy
         int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
-        new Enemy('W', PAIR_MAGENTA, x, 0, 24, 1, 10);
+        {
+            if (rand() % 20 == 0)
+            {
+                new Enemy('V', PAIR_MAGENTA, x + 2, 0, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x + 6, 0, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x, 1, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x + 4, 1, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x + 8, 1, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x + 2, 2, 24, 1, 10);
+                new Enemy('V', PAIR_MAGENTA, x + 6, 2, 24, 1, 10);
+            }
+            else
+                new Enemy('V', PAIR_BR_PINK, x, 0, 15, 1, 10);
+        }
     }
-    if (r < 1) { // 2% chance to spawn an asteroid
+    if (r < 5) { // 2% chance to spawn an asteroid
         int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
         Aster *a = new Aster('O', PAIR_GREY, x, 0, 60);
         a->setVel(0, 1); // move downwards
     }
-    if (r < 5) { // 5% chance to spawn a star
+    if (r < 25) { // 5% chance to spawn a star
         int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
         Background *s = new Background('.', PAIR_DR_GRAY, x, 0, 60);
         s->setVel(0, 1); // move downwards

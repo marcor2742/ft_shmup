@@ -8,6 +8,7 @@ class Player : public AEntity
 private:
     int score = 0;
     short playerNum = 1; // player number (for multiplayer) //2 for second player
+    string  ship_type = " A \n/|\\";
 
 public:
     Player();
@@ -25,6 +26,7 @@ void		update(float deltaTime) override;
 
     int getScore() const;
     short getPlayerNum() const { return playerNum; }
+    string getString() const;
 
     void setScore(int newScore);
     void setPlayerNum(short num) { playerNum = num; }
