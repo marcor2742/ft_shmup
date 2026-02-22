@@ -9,11 +9,7 @@ extern vector<AEntity*> g_bullets;
 //     g_bullets.push_back(this);
 // }
 
-Bullet::Bullet(Bullet const &src)
-    : AEntity(src)
-{
-    // g_bullets.push_back(this); copia?
-}
+// copy constructor removed: copying is disabled (use clone() instead)
 
 // Bullet::Bullet(char entityChar = '*', int color = PAIR_DEF, int x = 1, int y = 1, int updateInterval = 8, int health = 1000000000, int scoreValue = 0)
 Bullet::Bullet(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
@@ -23,6 +19,16 @@ Bullet::Bullet(char entityChar, int color, int x, int y, int updateInterval, int
 }
 
 Bullet::~Bullet() {}
+
+AEntity* Bullet::clone(int x, int y) const
+{
+    int nx = (x != -1) ? x : getPosX();
+    int ny = (y != -1) ? y : getPosY();
+    Bullet *b = new Bullet(getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
+    b->setVel(getVelX(), getVelY());
+    if (!getIsAlive()) b->setAlive(false);
+    return b;
+}
 
 void	Bullet::update(float deltaTime)
 {

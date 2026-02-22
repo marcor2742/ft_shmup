@@ -38,7 +38,13 @@ vector<AEntity*> g_bullets;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-//controlla se ci sono piu player con lo stesso playerNum. e non deve essere maggiore di 2
+// costruttori copia?
+// generazione random di nemici e asteroidi
+// cancellazzione dei nemici se escono dallo schermo
+// gestione del punteggio
+// gestione del game over
+// enemy con movimenti più complessi
+// controlla multiplayer, frecce direzionali non funzionano
 
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
@@ -76,6 +82,8 @@ int main() {
     int frame = 0;
     g_running = true;
     Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
+    // (void)player2;
     // g_entities.push_back(player);
     Aster *aster = new Aster('O', PAIR_GREY, 20, 0, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
@@ -83,8 +91,9 @@ int main() {
     Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
     (void)enemy;
     // g_entities.push_back(enemy);
-
-	vector<vector<AEntity*>*> groups = {
+    AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
+	(void)enemy2;
+    vector<vector<AEntity*>*> groups = {
         &g_players, &g_enemies, &g_bullets, &g_asteroids
     };
     while (g_running) {

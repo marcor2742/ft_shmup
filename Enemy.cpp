@@ -4,11 +4,7 @@
 
 extern vector<AEntity*> g_enemies;
 
-Enemy::Enemy(Enemy const &src)
-	: AEntity(src)
-{
-	// g_enemies.push_back(this); copia?
-}
+// copy constructor removed: copying is disabled (use clone() instead)
 
 Enemy::Enemy(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
 	: AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
@@ -17,6 +13,17 @@ Enemy::Enemy(char entityChar, int color, int x, int y, int updateInterval, int h
 }
 
 Enemy::~Enemy() {}
+
+AEntity* Enemy::clone(int x, int y) const
+{
+	int nx = (x != -1) ? x : getPosX();
+	int ny = (y != -1) ? y : getPosY();
+	Enemy *e = new Enemy(getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
+	e->setVel(getVelX(), getVelY());
+	if (!getIsAlive()) e->setAlive(false);
+
+	return e;
+}
 
 void	Enemy::update(float deltaTime)
 {

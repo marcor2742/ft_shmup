@@ -65,9 +65,11 @@ public:
 	virtual ~AEntity();
 
 	// --- Pure virtual: every entity must implement these ---
-	virtual void	update(float deltaTime) = 0;
-	virtual void	render(WINDOW *win) const = 0;
-	virtual void	onCollision(AEntity &other) = 0;
+	virtual void		update(float deltaTime) = 0;
+	virtual void		render(WINDOW *win) const = 0;
+	virtual void		onCollision(AEntity &other) = 0;
+	// clone: crea copia heap+registrata; x/y=-1 mantiene la posizione originale
+	virtual AEntity*	clone(int x = -1, int y = -1) const = 0;
 
 	// --- Virtual with shared default behaviour ---
 	virtual void	takeDamage(int dmg);

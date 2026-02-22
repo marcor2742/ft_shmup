@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
+#include <stdexcept>
 
 extern bool g_running;
 extern vector<AEntity*> g_players;
@@ -7,23 +8,43 @@ extern vector<AEntity*> g_players;
 Player::Player()
     : AEntity('@', PAIR_BR_GREEN, 1, 1, 8, 10), score(0), playerNum(1)
 {
+    if (playerNum < 1 || playerNum > 2)
+        throw std::runtime_error("Invalid player number (must be 1 or 2)");
+
+    for (AEntity *e : g_players) {
+        Player *p = dynamic_cast<Player*>(e);
+        if (p && p->getPlayerNum() == playerNum)
+            throw std::runtime_error("Player with same playerNum already exists");
+    }
+
     g_players.push_back(this);
 }
 
-Player::Player(Player const &src)
-    : AEntity(src), score(src.score), playerNum(src.playerNum)
-{
-    // g_players.push_back(this); copia?
-}
+// copy constructor removed: copying is disabled (use clone() where appropriate)
 
 Player::Player(short playerNum, char entityChar, int color,
            int x, int y, int updateInterval, int health)
     : AEntity(entityChar, color, x, y, updateInterval, health), score(0), playerNum(playerNum)
 {
+    if (playerNum < 1 || playerNum > 2)
+        throw std::runtime_error("Invalid player number (must be 1 or 2)");
+
+    for (AEntity *e : g_players) {
+        Player *p = dynamic_cast<Player*>(e);
+        if (p && p->getPlayerNum() == playerNum)
+            throw std::runtime_error("Player with same playerNum already exists");
+    }
+
     g_players.push_back(this);
 }
 
 Player::~Player() {}
+
+AEntity* Player::clone(int x, int y) const
+{
+    (void)x; (void)y;
+    throw std::runtime_error("Cannot clone a Player: each player must have a unique playerNum");
+}
 
 void Player::update(float deltaTime)
 {
