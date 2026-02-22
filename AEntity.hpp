@@ -10,16 +10,30 @@
 enum
 {
 	GREY = 10,
-	B_YELLOW,
-	B_GREEN,
+	BR_YELLOW,
+	BR_GREEN,
+	L_PINK,
+	SKY_BLUE,
+	BR_PINK,
+	ORANGE
 };
 
 //init_pair
 enum
 {
 	PAIR_GREY = 10,
-	PAIR_YELLOW,
+	PAIR_BR_YELLOW,
+	PAIR_BR_GREEN,
+	PAIR_L_PINK,
+	PAIR_ORANGE,
+	PAIR_BR_PINK,
+	PAIR_SKY_BLUE,
+	PAIR_RED,
 	PAIR_GREEN,
+	PAIR_YELLOW,
+	PAIR_BLUE,
+	PAIR_MAGENTA,
+	PAIR_CYAN,
 	PAIR_DEF
 };
 
@@ -29,7 +43,7 @@ class AEntity
 {
 protected:
 	char	entityChar;	// character displayed on screen
-	string	color;
+	int		color;
 
 	int	start_x, start_y;	// spawn position
 	int	pos_x, pos_y;		// current position
@@ -45,7 +59,7 @@ protected:
 public:
 	AEntity();
 	AEntity(AEntity const &aentity);
-	AEntity(char entityChar, string const &color,
+	AEntity(char entityChar, int color,
 		int x, int y, int updateInterval, int health, int scoreValue = 0);
 	virtual ~AEntity();
 
@@ -69,7 +83,7 @@ public:
 	int		getScoreValue() const;
 	bool	getIsAlive() const;
 	char	getEntityChar() const;
-	const string	&getColor() const;
+	int		getColor() const;
 
 	// --- Setters ---
 	void	setPos(int x, int y);

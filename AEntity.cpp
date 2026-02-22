@@ -3,7 +3,7 @@
 // --- Constructors / Destructor ---
 
 AEntity::AEntity()
-	: entityChar('?'), color(""),
+	: entityChar('?'), color(PAIR_DEF),
 	  start_x(0), start_y(0),
 	  pos_x(0), pos_y(0),
 	  vel_x(0), vel_y(0),
@@ -20,7 +20,7 @@ AEntity::AEntity(AEntity const &src)
 	  isAlive(src.isAlive), scoreValue(src.scoreValue)
 {}
 
-AEntity::AEntity(char entityChar, string const &color,
+AEntity::AEntity(char entityChar, int color,
 				 int x, int y, int updateInterval, int health, int scoreValue)
 	: entityChar(entityChar), color(color),
 	  start_x(x), start_y(y),
@@ -60,7 +60,7 @@ int		AEntity::getScoreValue()	const { return scoreValue; }
 bool	AEntity::getIsAlive()	const { return isAlive; }
 
 char	AEntity::getEntityChar()	const { return entityChar; }
-const string	&AEntity::getColor()		const { return color; }
+int		AEntity::getColor()		const { return color; }
 
 // --- Setters ---
 

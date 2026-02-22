@@ -7,14 +7,14 @@ extern vector<AEntity*> g_entities;
 extern bool g_running;
 
 Player::Player()
-    : AEntity('@', "green", 1, 1, 8, 10), score(0), playerNum(1)
+    : AEntity('@', PAIR_BR_GREEN, 1, 1, 8, 10), score(0), playerNum(1)
 {}
 
 Player::Player(Player const &src)
     : AEntity(src), score(src.score), playerNum(src.playerNum)
 {}
 
-Player::Player(short playerNum, char entityChar, string color,
+Player::Player(short playerNum, char entityChar, int color,
            int x, int y, int updateInterval, int health)
     : AEntity(entityChar, color, x, y, updateInterval, health), score(0), playerNum(playerNum)
 {}

@@ -72,12 +72,12 @@ int main() {
     
     int frame = 0;
     g_running = true;
-    Player *player= new Player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
     g_entities.push_back(player);
-    Aster *aster = new Aster('O', "grey", 20, 4, 60); // AsterNum=1, spawn at (2,2)
+    Aster *aster = new Aster('O', PAIR_GREY, 20, 4, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
     g_entities.push_back(aster);
-    Enemy *enemy = new Enemy('W', "red", 10, 0, 24, 5, 10);
+    Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
     g_entities.push_back(enemy);
 
 	// vector<vector<AEntity*>*> groups = {

@@ -1,14 +1,14 @@
 #include "Asteroid.hpp"
 
 Aster::Aster()
-    : AEntity('Q', "grey", 20, 4, 60, 0, 0)
+    : AEntity('Q', PAIR_GREY, 20, 4, 60, 0, 0)
 {}
 
 Aster::Aster(Aster const &src)
     : AEntity(src)
 {}
 
-Aster::Aster(char entityChar, string color, int x, int y, int updateInterval, int health, int scoreValue)
+Aster::Aster(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
     : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
 {}
 
@@ -25,17 +25,11 @@ void	Aster::update(float deltaTime)
 
 void	Aster::render(WINDOW *win) const
 {
-    if (has_colors() != FALSE)
-	{
-        start_color();
-        use_default_colors();
-		init_color(GREY, 600, 800, 1000);
-        init_pair(PAIR_GREY, GREY, COLOR_RED);
+    int color = get_color();
 
-        wattron(win, COLOR_PAIR(PAIR_GREY));
-        mvwaddch(win, getPosY(), getPosX(), getEntityChar());
-        wattroff(win, COLOR_PAIR(PAIR_GREY));
-	}
+	wattron(win, COLOR_PAIR(color));
+	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+	wattroff(win, COLOR_PAIR(color));
 }
 
 void	Aster::onCollision(AEntity &other)

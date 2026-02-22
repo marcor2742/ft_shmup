@@ -9,7 +9,7 @@ Enemy::Enemy(Enemy const &src)
 	: AEntity(src)
 {}
 
-Enemy::Enemy(char entityChar, string color, int x, int y, int updateInterval, int health, int scoreValue)
+Enemy::Enemy(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
 	: AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
 {}
 

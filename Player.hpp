@@ -12,7 +12,7 @@ private:
 public:
     Player();
     Player(Player const &src);
-    Player(short playerNum, char entityChar = '@', string color = "green",
+    Player(short playerNum, char entityChar = '@', int color = PAIR_BR_GREEN,
            int x = 1, int y = 1, int updateInterval = 8, int health = 10);
     ~Player();
 
