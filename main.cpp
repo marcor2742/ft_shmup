@@ -43,6 +43,7 @@ vector<AEntity*> g_bullets;
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
+void handleCollisions();
 
 int main() {
     initscr();
@@ -112,6 +113,7 @@ int main() {
 			if (!group) continue;
 			deleteEntity(*group);
 		}
+        handleCollisions();
 
         // --- render ---
         werase(winGame);
@@ -178,17 +180,37 @@ void handleCollisions() {
     for (auto *b : g_bullets)
         for (auto *e : g_enemies)
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
-			{}
+			{
+                e->takeDamage(1);
+                if (!e->getIsAlive()) {
+                    // player->increaseScore(e->getScoreValue());
+                    // free
+                }
+            }
 
     // proiettili nemici vs player
     for (auto *b : g_bullets)
         for (auto *p : g_players)
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
-			{}
+			{
+                p->takeDamage(1);
+                if (!p->getIsAlive()) {
+                    // game over
+                    g_running = false;
+                    // free all entities
+                }
+            }
 
     // asteroidi vs player
     for (auto *a : g_asteroids)
         for (auto *p : g_players)
             if (a->getPosX() == p->getPosX() && a->getPosY() == p->getPosY())
-			{}
+			{
+                p->takeDamage(1);
+                if (!p->getIsAlive()) {
+                    // game over
+                    g_running = false;
+                    // free all entities
+                }
+            }
 }
