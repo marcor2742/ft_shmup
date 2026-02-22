@@ -41,7 +41,11 @@ void	Bullet::update(float deltaTime)
 
 void	Bullet::render(WINDOW *win) const
 {
+    int color = getColor();
+
+	wattron(win, COLOR_PAIR(color));
     mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+    wattroff(win, COLOR_PAIR(color));
 }
 
 void	Bullet::onCollision(AEntity &other)

@@ -16,7 +16,8 @@ enum
 	L_PINK,
 	SKY_BLUE,
 	BR_PINK,
-	ORANGE
+	ORANGE,
+	DR_GRAY
 };
 
 //init_pair
@@ -35,7 +36,8 @@ enum
 	PAIR_BLUE,
 	PAIR_MAGENTA,
 	PAIR_CYAN,
-	PAIR_DEF
+	PAIR_DEF,
+	PAIR_DR_GRAY
 };
 
 using namespace std;

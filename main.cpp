@@ -52,7 +52,8 @@ void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
 void handleCollisions();
 void free_all_entities();
-void createRandomEntity();
+void createRandomEntity(int h_game, int w_game);
+void createBackground(int h_game, int w_game);
 
 int main() {
     initscr();
@@ -101,13 +102,17 @@ int main() {
     AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
 	(void)enemy2;
 
+    createBackground(h_game, w_game);
+    renderEntities(g_background, winGame);
+    wrefresh(winGame);
+
     vector<vector<AEntity*>*> groups = {
         &g_players, &g_enemies, &g_bullets, &g_asteroids, &g_background
     };
     while (g_running) {
         auto frameStart = game_clock::now();
 
-        createRandomEntity(); // probabilità di spawnare un nemico ogni frame
+        createRandomEntity(h_game, w_game); // probabilità di spawnare un nemico ogni frame
 
         // size_t size = g_entities.size();
         // for (size_t i = 0; i < size; i++) {
@@ -148,6 +153,7 @@ int main() {
             if (!group) continue;
             renderEntities(*group, winGame);
         }
+        renderEntities(g_players, winGame); // render player in front of everything else
 
         box(winGame, 0, 0);
         mvwprintw(winGame,  1, 2, "frame %d", frame);
@@ -172,18 +178,37 @@ int main() {
     endwin();
 }
 
-void createRandomEntity() {
+void createBackground(int h_game, int w_game)
+{
+    for (int i = 0; i < w_game * 2; i++) {
+        // int r = rand() % 100;
+    
+        int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
+        int y = rand() % (h_game - 2) + 1; // spawn within vertical bounds
+        Background *s = new Background('.', PAIR_DR_GRAY, x, y, 60);
+        s->setVel(0, 1);
+    }
+}
+
+void createRandomEntity(int h_game, int w_game) {
+    (void)h_game; 
     int r = rand() % 100;
     if (r < 3) { // 5% chance to spawn an enemy
-        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
         new Enemy('W', PAIR_MAGENTA, x, 0, 24, 5, 10);
     }
     if (r < 1) { // 2% chance to spawn an asteroid
-        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
         Aster *a = new Aster('O', PAIR_GREY, x, 0, 60);
         a->setVel(0, 1); // move downwards
     }
+    if (r < 5) { // 5% chance to spawn a star
+        int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
+        Background *s = new Background('.', PAIR_DR_GRAY, x, 0, 60);
+        s->setVel(0, 1); // move downwards
+    }
 }
+
 
 void updateEntities(vector<AEntity*> &entities, int frame) {
 	int size = entities.size();

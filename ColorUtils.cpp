@@ -52,6 +52,7 @@ void	init_colors(void)
 		init_color(L_PINK, 1000, 600, 600);
 		init_color(ORANGE, 1000, 600, 200);
 		init_color(SKY_BLUE, 0, 1000, 1000);
+		init_color(DR_GRAY, 0, 300, 600);
 
 		init_pair(PAIR_BR_GREEN, BR_GREEN, -1);
 		init_pair(PAIR_BR_PINK, BR_PINK, -1);
@@ -66,6 +67,7 @@ void	init_colors(void)
 		init_pair(PAIR_MAGENTA, COLOR_MAGENTA, -1);
 		init_pair(PAIR_CYAN, COLOR_CYAN, -1);
 		init_pair(PAIR_DEF, COLOR_WHITE,-1);
+		init_pair(PAIR_DR_GRAY, DR_GRAY, -1);
 	}
 }
 

@@ -53,7 +53,7 @@ void	Enemy::onCollision(AEntity &other)
 
 void	Enemy::shoot()
 {
-	Bullet *b = new Bullet();
+	Bullet *b = new Bullet('*', PAIR_BR_GREEN);
     b->setPos(getPosX(), getPosY() + 1);
     b->setVel(0, +1); // shoot upwards
 }
