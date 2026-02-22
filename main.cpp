@@ -18,6 +18,12 @@ static const long  FRAME_US   = 1000000 / FPS; // microseconds per frame (~16666
 vector<AEntity*> g_entities;
 bool g_running = false;
 
+vector<AEntity*> g_enemies;
+vector<AEntity*> g_players;
+vector<AEntity*> g_playerBullets;
+vector<AEntity*> g_enemyBullets;
+vector<AEntity*> g_asteroids;
+
 // defined in ncurses
 // COLOR_BLACK   0
 // COLOR_RED     1
@@ -36,6 +42,9 @@ bool g_running = false;
 // shoot (space and keypad 0): 32 and 48
 
 //controlla se ci sono piu player con lo stesso playerNum. e non deve essere maggiore di 2
+
+void updateEntities(vector<AEntity*> &entities, int frame);
+void deleteEntity(vector<AEntity*> &entities);
 
 int main() {
     initscr();
@@ -72,24 +81,38 @@ int main() {
     g_entities.push_back(aster);
     Enemy *enemy = new Enemy('W', "red", 10, 0, 24, 5, 10);
     g_entities.push_back(enemy);
+
+	// vector<vector<AEntity*>*> groups = {
+    //     &g_players, &g_enemies, &g_playerBullets, &g_enemyBullets, &g_asteroids, &g_entities
+    // };
     while (g_running) {
         auto frameStart = game_clock::now();
 
-        size_t size = g_entities.size();
-        for (size_t i = 0; i < size; i++) {
-            AEntity *e = g_entities[i];
-            if (frame % e->getUpdateInterval() == 0)
-                e->update(0.0f);
-        }
+        // size_t size = g_entities.size();
+        // for (size_t i = 0; i < size; i++) {
+        //     AEntity *e = g_entities[i];
+        //     if (frame % e->getUpdateInterval() == 0)
+        //         e->update(0.0f);
+        // }
+		updateEntities(g_entities, frame);
+		// for (auto group : groups) {	
+		// 	if (!group) continue;
+		// 	updateEntities(*group, frame);
+		// }
 
-        for (auto it = g_entities.begin(); it != g_entities.end(); ) {
-            if (!(*it)->getIsAlive()) {
-                delete *it;
-                it = g_entities.erase(it);
-            } else {
-                ++it;
-            }
-        }
+        // for (auto it = g_entities.begin(); it != g_entities.end(); ) {
+        //     if (!(*it)->getIsAlive()) {
+        //         delete *it;
+        //         it = g_entities.erase(it);
+        //     } else {
+        //         ++it;
+        //     }
+        // }
+		deleteEntity(g_entities);
+		// for (auto group : groups) {
+			// 	if (!group) continue;
+			// 	deleteEntity(*group);
+		// }
 
         // --- render ---
         werase(winGame);
@@ -104,6 +127,7 @@ int main() {
         box(winGame, 0, 0);
         mvwprintw(winGame,  1, 2, "frame %d", frame);
         mvwprintw(winScore, 1, 2, "score: %d", player->getScore());
+		mvwprintw(winScore, 2, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
         wrefresh(winGame);
         wrefresh(winScore);
 
@@ -119,4 +143,44 @@ int main() {
     delwin(winScore);
     curs_set(1);
     endwin();
+}
+
+void updateEntities(vector<AEntity*> &entities, int frame) {
+	int size = entities.size();
+    for (int i = 0; i < size; i++) {
+        AEntity *e = entities[i];
+        if (frame % e->getUpdateInterval() == 0)
+            e->update(0.0f);
+    }
+}
+
+void deleteEntity(vector<AEntity*> &entities) {
+    for (auto it = entities.begin(); it != entities.end(); ) {
+        if (!(*it)->getIsAlive()) {
+            delete *it;
+            it = entities.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void handleCollisions() {
+    // proiettili player vs nemici
+    for (auto *b : g_playerBullets)
+        for (auto *e : g_enemies)
+            if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
+			{}
+
+    // proiettili nemici vs player
+    for (auto *b : g_enemyBullets)
+        for (auto *p : g_players)
+            if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
+			{}
+
+    // asteroidi vs player
+    for (auto *a : g_asteroids)
+        for (auto *p : g_players)
+            if (a->getPosX() == p->getPosX() && a->getPosY() == p->getPosY())
+			{}
 }

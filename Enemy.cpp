@@ -3,6 +3,7 @@
 #include <vector>
 
 extern vector<AEntity*> g_entities;
+// extern vector<AEntity*> g_enemies;
 
 Enemy::Enemy(Enemy const &src)
 	: AEntity(src)
@@ -43,4 +44,5 @@ void	Enemy::shoot()
     b->setPos(getPosX(), getPosY() + 1);
     b->setVel(0, +1); // shoot upwards
     g_entities.push_back(b);
+	// g_enemies.push_back(b);
 }
