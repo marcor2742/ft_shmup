@@ -40,17 +40,16 @@ vector<AEntity*> g_background;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-// generazione random di nemici e asteroidi
-// cancellazzione dei nemici se escono dallo schermo
 // gestione del punteggio
 // gestione del game over
+// cancellazzione dei nemici se escono dallo schermo
 // enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
 // controlla multiplayer, frecce direzionali non funzionano
 
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
-void handleCollisions();
+void handleCollisions(Player &player);
 void free_all_entities();
 void createRandomEntity(int h_game, int w_game);
 void createBackground(int h_game, int w_game);
@@ -89,18 +88,18 @@ int main() {
     // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
     // (void)player2;
     // g_entities.push_back(player);
-    Aster *aster = new Aster('O', PAIR_GREEN, 20, 0, 60); // AsterNum=1, spawn at (2,2)
-    aster->setVel(0, 1);
+    // Aster *aster = new Aster('O', PAIR_GREEN, 20, 0, 60); // AsterNum=1, spawn at (2,2)
+    // aster->setVel(0, 1);
     // g_entities.push_back(aster);
-    Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
-    (void)enemy;
+    // Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
+    // (void)enemy;
     // g_entities.push_back(enemy);
 
-    Background *star = new Background('.', PAIR_GREY, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
-    star->setVel(0, 1);
+    // Background *star = new Background('.', PAIR_GREY, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
+    // star->setVel(0, 1);
 
-    AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
-	(void)enemy2;
+    // AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
+	// (void)enemy2;
 
     createBackground(h_game, w_game);
     renderEntities(g_background, winGame);
@@ -139,7 +138,7 @@ int main() {
 			if (!group) continue;
 			deleteEntity(*group);
 		}
-        handleCollisions();
+        handleCollisions(*player);
 
         // --- render ---
         werase(winGame);
@@ -195,7 +194,7 @@ void createRandomEntity(int h_game, int w_game) {
     int r = rand() % 100;
     if (r < 3) { // 5% chance to spawn an enemy
         int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
-        new Enemy('W', PAIR_MAGENTA, x, 0, 24, 5, 10);
+        new Enemy('W', PAIR_MAGENTA, x, 0, 24, 1, 10);
     }
     if (r < 1) { // 2% chance to spawn an asteroid
         int x = rand() % (w_game - 2) + 1; // spawn within horizontal bounds
@@ -236,16 +235,16 @@ void renderEntities(vector<AEntity*> &entities, WINDOW *win) {
     }
 }
 
-void handleCollisions() {
+void handleCollisions(Player &player) {
     // proiettili player vs nemici
     for (auto *b : g_bullets)
         for (auto *e : g_enemies)
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
 			{
                 e->takeDamage(1);
+                b->setAlive(false); // kill bullet on hit
                 if (!e->getIsAlive()) {
-                    // player->increaseScore(e->getScoreValue());
-                    // free
+                    player.increaseScore(e->getScoreValue());
                 }
             }
 
@@ -255,10 +254,12 @@ void handleCollisions() {
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
+                b->setAlive(false); // kill bullet on hit
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
-                    // free all entities
+                    free_all_entities();
+
                 }
             }
 
@@ -268,10 +269,11 @@ void handleCollisions() {
             if (a->getPosX() == p->getPosX() && a->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
+                a->setAlive(false); // destroy asteroid on collision
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
-                    // free all entities
+                    free_all_entities();
                 }
             }
 }
