@@ -22,7 +22,11 @@ bool g_running = false;
 vector<AEntity*> g_asteroids;
 vector<AEntity*> g_enemies;
 vector<AEntity*> g_players;
-vector<AEntity*> g_bullets;
+
+// vector<AEntity*> g_bullets;
+vector<AEntity*> g_enemyBullets;
+vector<AEntity*> g_playerBullets;
+
 vector<AEntity*> g_background;
 
 // defined in ncurses
@@ -40,9 +44,7 @@ vector<AEntity*> g_background;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-// gestione del punteggio
-// gestione del game over
-// cancellazzione dei nemici se escono dallo schermo
+//renderizzare sfondo prima e tutto il resto dopo
 // enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
 // controlla multiplayer, frecce direzionali non funzionano
 
@@ -84,7 +86,7 @@ int main() {
     
     int frame = 0;
     g_running = true;
-    Player *player= new Player(1, '@', PAIR_YELLOW, 20, 37, 8, 10); // playerNum=1, spawn at (2,2)
+    Player *player= new Player(1, '@', PAIR_YELLOW, w_game / 2, h_game - 4, 8, 10); // playerNum=1, spawn at (2,2)
     // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
     // (void)player2;
     // g_entities.push_back(player);
@@ -106,7 +108,7 @@ int main() {
     wrefresh(winGame);
 
     vector<vector<AEntity*>*> groups = {
-        &g_players, &g_enemies, &g_bullets, &g_asteroids, &g_background
+        &g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids, &g_background
     };
     while (g_running) {
         auto frameStart = game_clock::now();
@@ -148,16 +150,17 @@ int main() {
         // for (AEntity *e : g_entities) {
         //     e->render(winGame);
         // }
+        renderEntities(g_background, winGame); // render background first
         for (auto group : groups) {
-            if (!group) continue;
+            if (!group || group == &g_background) continue;
             renderEntities(*group, winGame);
         }
-        renderEntities(g_players, winGame); // render player in front of everything else
+        // renderEntities(g_players, winGame); // render player in front of everything else
 
         box(winGame, 0, 0);
-        mvwprintw(winGame,  1, 2, "frame %d", frame);
-        mvwprintw(winScore, 1, 2, "score: %d", player->getScore());
-		mvwprintw(winScore, 2, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
+        mvwprintw(winScore,  1, 2, "frame %d", frame);
+        mvwprintw(winScore, 2, 2, "score: %d", player->getScore());
+		mvwprintw(winScore, 3, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
         wrefresh(winGame);
         wrefresh(winScore);
 
@@ -250,24 +253,24 @@ void renderEntities(vector<AEntity*> &entities, WINDOW *win) {
 
 void handleCollisions(Player &player) {
     // proiettili player vs nemici
-    for (auto *b : g_bullets)
+    for (auto *b : g_playerBullets)
         for (auto *e : g_enemies)
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
 			{
                 e->takeDamage(1);
-                b->setAlive(false); // kill bullet on hit
+                b->kill(); // kill bullet on hit
                 if (!e->getIsAlive()) {
                     player.increaseScore(e->getScoreValue());
                 }
             }
 
     // proiettili nemici vs player
-    for (auto *b : g_bullets)
+    for (auto *b : g_enemyBullets)
         for (auto *p : g_players)
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
-                b->setAlive(false); // kill bullet on hit
+                b->kill(); // kill bullet on hit
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
@@ -282,17 +285,29 @@ void handleCollisions(Player &player) {
             if (a->getPosX() == p->getPosX() && a->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
-                a->setAlive(false); // destroy asteroid on collision
+                a->kill(); // destroy asteroid on collision
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
                     free_all_entities();
                 }
             }
+
+    // nemici vs player
+    for (auto *e : g_enemies)
+        for (auto *p : g_players)
+            if (e->getPosX() == p->getPosX() && e->getPosY() == p->getPosY())
+            {
+                p->takeDamage(1);
+                e->setAlive(false); // destroy enemy on collision
+                p->setAlive(false); // kill player on collision 
+                g_running = false;  // game over
+                free_all_entities();
+            }
 }
 
 void free_all_entities() {
-    for (auto group : {&g_players, &g_enemies, &g_bullets, &g_asteroids}) {
+    for (auto group : {&g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids, &g_background}) {
         if (!group) continue;
         for (AEntity *e : *group)
             delete e;

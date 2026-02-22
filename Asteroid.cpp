@@ -36,6 +36,9 @@ void	Aster::update(float deltaTime)
     int nx = getPosX() + getVelX();
     int ny = getPosY() + getVelY();
     setPos(nx, ny);
+    if (getPosY() > 50) { // if enemy goes off screen, kill it
+		kill();
+	}
 }
 
 void	Aster::render(WINDOW *win) const

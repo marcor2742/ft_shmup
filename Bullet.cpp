@@ -1,7 +1,9 @@
 #include "Bullet.hpp"
 #include <vector>
 
-extern vector<AEntity*> g_bullets;
+// extern vector<AEntity*> g_bullets;
+extern vector<AEntity*> g_playerBullets;
+extern vector<AEntity*> g_enemyBullets;
 
 // Bullet::Bullet()
 //     : AEntity('*', "yellow", 0, 0, 4, 1)
@@ -12,10 +14,15 @@ extern vector<AEntity*> g_bullets;
 // copy constructor removed: copying is disabled (use clone() instead)
 
 // Bullet::Bullet(char entityChar = '*', int color = PAIR_DEF, int x = 1, int y = 1, int updateInterval = 8, int health = 1000000000, int scoreValue = 0)
-Bullet::Bullet(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
-    : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
+Bullet::Bullet(bool isPlayerBullet, char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
+    : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue), 
+      isPlayerBullet(isPlayerBullet)
 {
-    g_bullets.push_back(this);
+    if (isPlayerBullet) {
+        g_playerBullets.push_back(this);
+    } else {
+        g_enemyBullets.push_back(this);
+    }
 }
 
 Bullet::~Bullet() {}
@@ -24,7 +31,7 @@ AEntity* Bullet::clone(int x, int y) const
 {
     int nx = (x != -1) ? x : getPosX();
     int ny = (y != -1) ? y : getPosY();
-    Bullet *b = new Bullet(getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
+    Bullet *b = new Bullet(isPlayerBullet, getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
     b->setVel(getVelX(), getVelY());
     if (!getIsAlive()) b->setAlive(false);
     return b;
@@ -37,6 +44,11 @@ void	Bullet::update(float deltaTime)
     int nx = getPosX() + getVelX();
     int ny = getPosY() + getVelY();
     setPos(nx, ny);
+    if (!isPlayerBullet && getPosY() > 50) { // if player bullet goes off screen, kill it
+		kill();
+	} else if (getPosY() < 0) {
+		kill();
+	}
 }
 
 void	Bullet::render(WINDOW *win) const
