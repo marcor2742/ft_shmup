@@ -91,6 +91,7 @@ int main() {
 			deleteEntity(*group);
 		}
         handleCollisions(*player);
+        if (!g_running) break; // player potrebbe essere già stato deallocato
 
         // --- render ---
         werase(winGame);
