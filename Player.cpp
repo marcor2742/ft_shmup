@@ -53,7 +53,7 @@ void Player::update(float deltaTime)
     int vx = 0, vy = 0;
     int ch;
     while ((ch = getch()) != ERR) {
-        if (ch == 'q') { g_running = false; return; }
+        if (ch == 'q' || ch == 27) { g_running = false; return; }
         if (playerNum == 1) {
             if (ch == 'a')           vx = -1;
             else if (ch == 'd')      vx =  1;

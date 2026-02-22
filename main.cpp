@@ -158,9 +158,10 @@ int main() {
         // renderEntities(g_players, winGame); // render player in front of everything else
 
         box(winGame, 0, 0);
-        mvwprintw(winScore,  1, 2, "frame %d", frame);
-        mvwprintw(winScore, 2, 2, "score: %d", player->getScore());
-		mvwprintw(winScore, 3, 2, "health: %d/%d", player->getHealth(), player->getMaxHealth());
+        mvwprintw(winScore, 1, 2, "frame  %d", frame);
+        mvwprintw(winScore, 2, 2, "time   %.1fs", (float)frame / FPS);
+        mvwprintw(winScore, 3, 2, "score  %d", player->getScore());
+        mvwprintw(winScore, 4, 2, "health %d/%d", player->getHealth(), player->getMaxHealth());
         wrefresh(winGame);
         wrefresh(winScore);
 
@@ -172,6 +173,16 @@ int main() {
 
         ++frame;
     }
+
+    string gameOverMsg = "Game Over!";
+    werase(winGame);
+    mvwprintw(winGame, h_game / 2, w_game / 2 - gameOverMsg.length() / 2, "%s", gameOverMsg.c_str());
+    wrefresh(winGame);
+    int ch;
+    while ((ch = getch()) && ch != 'q' && ch != 27) {
+        ch = getch();
+    }
+
     free_all_entities();
 
     delwin(winGame);
