@@ -1,23 +1,27 @@
 #include "Player.hpp"
 #include "Bullet.hpp"
-#include <iostream>
-#include <vector>
 
-extern vector<AEntity*> g_entities;
 extern bool g_running;
+extern vector<AEntity*> g_players;
 
 Player::Player()
     : AEntity('@', "green", 1, 1, 8, 10), score(0), playerNum(1)
-{}
+{
+    g_players.push_back(this);
+}
 
 Player::Player(Player const &src)
     : AEntity(src), score(src.score), playerNum(src.playerNum)
-{}
+{
+    // g_players.push_back(this); copia?
+}
 
 Player::Player(short playerNum, char entityChar, string color,
            int x, int y, int updateInterval, int health)
     : AEntity(entityChar, color, x, y, updateInterval, health), score(0), playerNum(playerNum)
-{}
+{
+    g_players.push_back(this);
+}
 
 Player::~Player() {}
 
@@ -60,7 +64,6 @@ void Player::shoot()
     Bullet *b = new Bullet();
     b->setPos(getPosX(), getPosY() - 1);
     b->setVel(0, -1); // shoot upwards
-    g_entities.push_back(b); // add bullet to global entity list (to be updated and rendered by game loop)
     // Create a new bullet entity (to be added to the entity list by the game loop)
     // Bullet updateInterval = 4 (updates every 4 frames ~= 16 times/sec at 60fps)
 }

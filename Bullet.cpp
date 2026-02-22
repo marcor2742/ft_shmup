@@ -1,8 +1,25 @@
 #include "Bullet.hpp"
+#include <vector>
 
-Bullet::Bullet()
-    : AEntity('*', "yellow", 0, 0, 4, 1)
-{}
+extern vector<AEntity*> g_bullets;
+
+// Bullet::Bullet()
+//     : AEntity('*', "yellow", 0, 0, 4, 1)
+// {
+//     g_bullets.push_back(this);
+// }
+
+Bullet::Bullet(Bullet const &src)
+    : AEntity(src)
+{
+    // g_bullets.push_back(this); copia?
+}
+
+Bullet::Bullet(char entityChar, string color, int x, int y, int updateInterval, int health, int scoreValue)
+    : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
+{
+    g_bullets.push_back(this);
+}
 
 Bullet::~Bullet() {}
 

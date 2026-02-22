@@ -1,16 +1,24 @@
 #include "Asteroid.hpp"
 
+extern vector<AEntity*> g_asteroids;
+
 Aster::Aster()
     : AEntity('Q', "grey", 20, 4, 60, 0, 0)
-{}
+{
+    g_asteroids.push_back(this);
+}
 
 Aster::Aster(Aster const &src)
     : AEntity(src)
-{}
+{
+    // g_asteroids.push_back(this); copia?
+}
 
 Aster::Aster(char entityChar, string color, int x, int y, int updateInterval, int health, int scoreValue)
     : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
-{}
+{
+    g_asteroids.push_back(this);
+}
 
 Aster::~Aster() {}
 

@@ -15,14 +15,13 @@ using game_clock = std::chrono::steady_clock;
 static const int   FPS        = 60;
 static const long  FRAME_US   = 1000000 / FPS; // microseconds per frame (~16666 us)
 
-vector<AEntity*> g_entities;
+// vector<AEntity*> g_entities;
 bool g_running = false;
 
+vector<AEntity*> g_asteroids;
 vector<AEntity*> g_enemies;
 vector<AEntity*> g_players;
-vector<AEntity*> g_playerBullets;
-vector<AEntity*> g_enemyBullets;
-vector<AEntity*> g_asteroids;
+vector<AEntity*> g_bullets;
 
 // defined in ncurses
 // COLOR_BLACK   0
@@ -43,6 +42,7 @@ vector<AEntity*> g_asteroids;
 
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
+void renderEntities(vector<AEntity*> &entities, WINDOW *win);
 
 int main() {
     initscr();
@@ -73,16 +73,17 @@ int main() {
     int frame = 0;
     g_running = true;
     Player *player= new Player(1, '@', "green", 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
-    g_entities.push_back(player);
+    // g_entities.push_back(player);
     Aster *aster = new Aster('O', "grey", 20, 4, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
-    g_entities.push_back(aster);
+    // g_entities.push_back(aster);
     Enemy *enemy = new Enemy('W', "red", 10, 0, 24, 5, 10);
-    g_entities.push_back(enemy);
+    (void)enemy;
+    // g_entities.push_back(enemy);
 
-	// vector<vector<AEntity*>*> groups = {
-    //     &g_players, &g_enemies, &g_playerBullets, &g_enemyBullets, &g_asteroids, &g_entities
-    // };
+	vector<vector<AEntity*>*> groups = {
+        &g_players, &g_enemies, &g_bullets, &g_asteroids
+    };
     while (g_running) {
         auto frameStart = game_clock::now();
 
@@ -92,11 +93,11 @@ int main() {
         //     if (frame % e->getUpdateInterval() == 0)
         //         e->update(0.0f);
         // }
-		updateEntities(g_entities, frame);
-		// for (auto group : groups) {	
-		// 	if (!group) continue;
-		// 	updateEntities(*group, frame);
-		// }
+		//updateEntities(g_entities, frame);
+		for (auto group : groups) {	
+			if (!group) continue;
+			updateEntities(*group, frame);
+		}
 
         // for (auto it = g_entities.begin(); it != g_entities.end(); ) {
         //     if (!(*it)->getIsAlive()) {
@@ -106,21 +107,24 @@ int main() {
         //         ++it;
         //     }
         // }
-		deleteEntity(g_entities);
-		// for (auto group : groups) {
-			// 	if (!group) continue;
-			// 	deleteEntity(*group);
-		// }
+		//deleteEntity(g_entities);
+		for (auto group : groups) {
+			if (!group) continue;
+			deleteEntity(*group);
+		}
 
         // --- render ---
         werase(winGame);
         werase(winScore);
 
-        player->render(winGame);
-        for (AEntity *e : g_entities) {
-            e->render(winGame);
+        // player->render(winGame);
+        // for (AEntity *e : g_entities) {
+        //     e->render(winGame);
+        // }
+        for (auto group : groups) {
+            if (!group) continue;
+            renderEntities(*group, winGame);
         }
-
 
         box(winGame, 0, 0);
         mvwprintw(winGame,  1, 2, "frame %d", frame);
@@ -163,15 +167,21 @@ void deleteEntity(vector<AEntity*> &entities) {
     }
 }
 
+void renderEntities(vector<AEntity*> &entities, WINDOW *win) {
+    for (AEntity *e : entities) {
+        e->render(win);
+    }
+}
+
 void handleCollisions() {
     // proiettili player vs nemici
-    for (auto *b : g_playerBullets)
+    for (auto *b : g_bullets)
         for (auto *e : g_enemies)
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
 			{}
 
     // proiettili nemici vs player
-    for (auto *b : g_enemyBullets)
+    for (auto *b : g_bullets)
         for (auto *p : g_players)
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
 			{}
