@@ -44,6 +44,7 @@ void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
 void handleCollisions();
+void free_all_entities();
 
 int main() {
     initscr();
@@ -144,6 +145,8 @@ int main() {
 
         ++frame;
     }
+    free_all_entities();
+
     delwin(winGame);
     delwin(winScore);
     curs_set(1);
@@ -214,4 +217,13 @@ void handleCollisions() {
                     // free all entities
                 }
             }
+}
+
+void free_all_entities() {
+    for (auto group : {&g_players, &g_enemies, &g_bullets, &g_asteroids}) {
+        if (!group) continue;
+        for (AEntity *e : *group)
+            delete e;
+        group->clear();
+    }
 }
