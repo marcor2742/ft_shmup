@@ -11,14 +11,14 @@ private:
 
 public:
     Player();
-    Player(Player const &src);
     Player(short playerNum, char entityChar = '@', int color = PAIR_BR_GREEN,
            int x = 1, int y = 1, int updateInterval = 8, int health = 10);
     ~Player();
 
-    void update(float deltaTime) override;
-    void render(WINDOW *win) const override;
-    void onCollision(AEntity &other) override;
+void		update(float deltaTime) override;
+	void		render(WINDOW *win) const override;
+	void		onCollision(AEntity &other) override;
+	AEntity*	clone(int x = -1, int y = -1) const override; // lancia sempre: i Player non si clonano
 
     void increaseScore(int amount);
     void shoot();

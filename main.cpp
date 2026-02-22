@@ -40,13 +40,19 @@ vector<AEntity*> g_background;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-//controlla se ci sono piu player con lo stesso playerNum. e non deve essere maggiore di 2
+// generazione random di nemici e asteroidi
+// cancellazzione dei nemici se escono dallo schermo
+// gestione del punteggio
+// gestione del game over
+// enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
+// controlla multiplayer, frecce direzionali non funzionano
 
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
 void handleCollisions();
 void free_all_entities();
+void createRandomEntity();
 
 int main() {
     initscr();
@@ -79,6 +85,8 @@ int main() {
     int frame = 0;
     g_running = true;
     Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
+    // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
+    // (void)player2;
     // g_entities.push_back(player);
     Aster *aster = new Aster('O', PAIR_GREEN, 20, 0, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
@@ -86,14 +94,20 @@ int main() {
     Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
     (void)enemy;
     // g_entities.push_back(enemy);
-    Background *star = new Background(ACS_BULLET, PAIR_DEF, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
+
+    Background *star = new Background('.', PAIR_GREY, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
     star->setVel(0, 1);
 
-	vector<vector<AEntity*>*> groups = {
-        &g_players, &g_enemies, &g_bullets, &g_asteroids
+    AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
+	(void)enemy2;
+
+    vector<vector<AEntity*>*> groups = {
+        &g_players, &g_enemies, &g_bullets, &g_asteroids, &g_background
     };
     while (g_running) {
         auto frameStart = game_clock::now();
+
+        createRandomEntity(); // probabilità di spawnare un nemico ogni frame
 
         // size_t size = g_entities.size();
         // for (size_t i = 0; i < size; i++) {
@@ -156,6 +170,19 @@ int main() {
     delwin(winScore);
     curs_set(1);
     endwin();
+}
+
+void createRandomEntity() {
+    int r = rand() % 100;
+    if (r < 3) { // 5% chance to spawn an enemy
+        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        new Enemy('W', PAIR_MAGENTA, x, 0, 24, 5, 10);
+    }
+    if (r < 1) { // 2% chance to spawn an asteroid
+        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        Aster *a = new Aster('O', PAIR_GREY, x, 0, 60);
+        a->setVel(0, 1); // move downwards
+    }
 }
 
 void updateEntities(vector<AEntity*> &entities, int frame) {

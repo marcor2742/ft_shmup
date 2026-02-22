@@ -9,11 +9,7 @@ Aster::Aster()
     g_asteroids.push_back(this);
 }
 
-Aster::Aster(Aster const &src)
-    : AEntity(src)
-{
-    // g_asteroids.push_back(this); copia?
-}
+// copy constructor removed: copying is disabled (use clone() instead)
 
 Aster::Aster(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
     : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
@@ -22,6 +18,16 @@ Aster::Aster(char entityChar, int color, int x, int y, int updateInterval, int h
 }
 
 Aster::~Aster() {}
+
+AEntity* Aster::clone(int x, int y) const
+{
+    int nx = (x != -1) ? x : getPosX();
+    int ny = (y != -1) ? y : getPosY();
+    Aster *a = new Aster(getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
+    a->setVel(getVelX(), getVelY());
+    if (!getIsAlive()) a->setAlive(false);
+    return a;
+}
 
 void	Aster::update(float deltaTime)
 {

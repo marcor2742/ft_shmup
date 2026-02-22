@@ -33,6 +33,16 @@ void	Background::update(float deltaTime)
     setPos(nx, ny);
 }
 
+AEntity* Background::clone(int x, int y) const
+{
+    int nx = (x != -1) ? x : getPosX();
+    int ny = (y != -1) ? y : getPosY();
+    Background *a = new Background(getEntityChar(), getColor(), nx, ny, getUpdateInterval(), getHealth(), getScoreValue());
+    a->setVel(getVelX(), getVelY());
+    if (!getIsAlive()) a->setAlive(false);
+    return a;
+}
+
 void	Background::render(WINDOW *win) const
 {
     int color = getColor();
