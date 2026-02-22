@@ -29,25 +29,6 @@ vector<AEntity*> g_playerBullets;
 
 vector<AEntity*> g_background;
 
-// defined in ncurses
-// COLOR_BLACK   0
-// COLOR_RED     1
-// COLOR_GREEN   2
-// COLOR_YELLOW  3
-// COLOR_BLUE    4
-// COLOR_MAGENTA 5
-// COLOR_CYAN    6
-// COLOR_WHITE   7
-
-//keyboard input
-// KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
-//wasd: w=119, a=97, s=115, d=100
-// shoot (space and keypad 0): 32 and 48
-
-//renderizzare sfondo prima e tutto il resto dopo
-// enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
-// controlla multiplayer, frecce direzionali non funzionano
-
 void updateEntities(vector<AEntity*> &entities, int frame);
 void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
@@ -87,21 +68,6 @@ int main() {
     int frame = 0;
     g_running = true;
     Player *player= new Player(1, '@', PAIR_YELLOW, w_game / 2, h_game - 4, 8, 10); // playerNum=1, spawn at (2,2)
-    // Player *player2= new Player(2, '@', PAIR_GREEN, 4, 4, 8, 10); 
-    // (void)player2;
-    // g_entities.push_back(player);
-    // Aster *aster = new Aster('O', PAIR_GREEN, 20, 0, 60); // AsterNum=1, spawn at (2,2)
-    // aster->setVel(0, 1);
-    // g_entities.push_back(aster);
-    // Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
-    // (void)enemy;
-    // g_entities.push_back(enemy);
-
-    // Background *star = new Background('.', PAIR_GREY, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
-    // star->setVel(0, 1);
-
-    // AEntity *enemy2 = enemy->clone(11, -1); // clone enemy at different position
-	// (void)enemy2;
 
     createBackground(h_game, w_game);
     renderEntities(g_background, winGame);
@@ -115,27 +81,11 @@ int main() {
 
         createRandomEntity(h_game, w_game); // probabilità di spawnare un nemico ogni frame
 
-        // size_t size = g_entities.size();
-        // for (size_t i = 0; i < size; i++) {
-        //     AEntity *e = g_entities[i];
-        //     if (frame % e->getUpdateInterval() == 0)
-        //         e->update(0.0f);
-        // }
-		//updateEntities(g_entities, frame);
 		for (auto group : groups) {	
 			if (!group) continue;
 			updateEntities(*group, frame);
 		}
 
-        // for (auto it = g_entities.begin(); it != g_entities.end(); ) {
-        //     if (!(*it)->getIsAlive()) {
-        //         delete *it;
-        //         it = g_entities.erase(it);
-        //     } else {
-        //         ++it;
-        //     }
-        // }
-		//deleteEntity(g_entities);
 		for (auto group : groups) {
 			if (!group) continue;
 			deleteEntity(*group);
@@ -146,16 +96,11 @@ int main() {
         werase(winGame);
         werase(winScore);
 
-        // player->render(winGame);
-        // for (AEntity *e : g_entities) {
-        //     e->render(winGame);
-        // }
         renderEntities(g_background, winGame); // render background first
         for (auto group : groups) {
             if (!group || group == &g_background) continue;
             renderEntities(*group, winGame);
         }
-        // renderEntities(g_players, winGame); // render player in front of everything else
 
         box(winGame, 0, 0);
         mvwprintw(winScore, 1, 2, "frame  %d", frame);
