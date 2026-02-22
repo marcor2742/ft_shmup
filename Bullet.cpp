@@ -15,7 +15,8 @@ Bullet::Bullet(Bullet const &src)
     // g_bullets.push_back(this); copia?
 }
 
-Bullet::Bullet(char entityChar, string color, int x, int y, int updateInterval, int health, int scoreValue)
+// Bullet::Bullet(char entityChar = '*', int color = PAIR_DEF, int x = 1, int y = 1, int updateInterval = 8, int health = 1000000000, int scoreValue = 0)
+Bullet::Bullet(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
     : AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
 {
     g_bullets.push_back(this);
