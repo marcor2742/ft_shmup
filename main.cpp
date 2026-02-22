@@ -245,7 +245,7 @@ void handleCollisions(Player &player) {
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
 			{
                 e->takeDamage(1);
-                b->setAlive(false); // kill bullet on hit
+                b->kill(); // kill bullet on hit
                 if (!e->getIsAlive()) {
                     player.increaseScore(e->getScoreValue());
                 }
@@ -257,7 +257,7 @@ void handleCollisions(Player &player) {
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
-                b->setAlive(false); // kill bullet on hit
+                b->kill(); // kill bullet on hit
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
@@ -272,7 +272,7 @@ void handleCollisions(Player &player) {
             if (a->getPosX() == p->getPosX() && a->getPosY() == p->getPosY())
 			{
                 p->takeDamage(1);
-                a->setAlive(false); // destroy asteroid on collision
+                a->kill(); // destroy asteroid on collision
                 if (!p->getIsAlive()) {
                     // game over
                     g_running = false;
@@ -294,7 +294,7 @@ void handleCollisions(Player &player) {
 }
 
 void free_all_entities() {
-    for (auto group : {&g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids}) {
+    for (auto group : {&g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids, &g_background}) {
         if (!group) continue;
         for (AEntity *e : *group)
             delete e;
