@@ -52,6 +52,7 @@ int main() {
     nodelay(stdscr, TRUE); // make getch non-blocking
     keypad(stdscr, TRUE); // enable arrow keys
     curs_set(0); // hide cursor
+    init_colors();
     
     int h, w;
     getmaxyx(stdscr, h, w);
@@ -75,7 +76,7 @@ int main() {
     g_running = true;
     Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
     // g_entities.push_back(player);
-    Aster *aster = new Aster('O', PAIR_GREY, 20, 4, 60); // AsterNum=1, spawn at (2,2)
+    Aster *aster = new Aster('O', PAIR_GREY, 20, 0, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
     // g_entities.push_back(aster);
     Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);

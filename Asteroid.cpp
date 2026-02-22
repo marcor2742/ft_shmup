@@ -3,7 +3,7 @@
 extern vector<AEntity*> g_asteroids;
 
 Aster::Aster()
-    : AEntity('Q', PAIR_GREY, 20, 4, 60, 0, 0)
+    : AEntity('O', PAIR_GREY, 20, 4, 60, 0, 0)
 {
     g_asteroids.push_back(this);
 }
@@ -34,6 +34,7 @@ void	Aster::update(float deltaTime)
 void	Aster::render(WINDOW *win) const
 {
     int color = getColor();
+    
 
 	wattron(win, COLOR_PAIR(color));
 	mvwaddch(win, getPosY(), getPosX(), getEntityChar());

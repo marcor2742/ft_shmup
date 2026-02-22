@@ -94,4 +94,6 @@ public:
 	void	setUpdateInterval(int n);
 };
 
+void	init_colors(void);
+
 #endif
