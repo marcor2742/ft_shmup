@@ -65,7 +65,7 @@ void	init_colors(void)
 		init_pair(PAIR_BLUE, COLOR_BLUE, -1);
 		init_pair(PAIR_MAGENTA, COLOR_MAGENTA, -1);
 		init_pair(PAIR_CYAN, COLOR_CYAN, -1);
-		init_pair(PAIR_DEF, COLOR_WHITE, -1);
+		init_pair(PAIR_DEF, COLOR_WHITE,-1);
 	}
 }
 

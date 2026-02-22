@@ -33,9 +33,12 @@ void	Enemy::update(float deltaTime)
 
 void	Enemy::render(WINDOW *win) const
 {
-	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
-}
+    int color = getColor();
 
+	wattron(win, COLOR_PAIR(color));
+	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+	wattroff(win, COLOR_PAIR(color));
+}
 void	Enemy::onCollision(AEntity &other)
 {
 	(void)other;

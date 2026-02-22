@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "Player.hpp"
 #include "Bullet.hpp"
+#include "Background.hpp"
 #include "Asteroid.hpp"
 #include "Enemy.hpp"
 #include "AEntity.hpp"
@@ -22,6 +23,7 @@ vector<AEntity*> g_asteroids;
 vector<AEntity*> g_enemies;
 vector<AEntity*> g_players;
 vector<AEntity*> g_bullets;
+vector<AEntity*> g_background;
 
 // defined in ncurses
 // COLOR_BLACK   0
@@ -64,6 +66,7 @@ int main() {
     // int w_score = 20;    
 
     WINDOW *winGame = newwin(h_game, w_game, 0, 0);
+    wbkgd(winGame, COLOR_PAIR(PAIR_DEF)); //per fare tutto lo sfondo di questo colore
     box(winGame, 0, 0);
     wrefresh(winGame);
     
@@ -77,12 +80,14 @@ int main() {
     g_running = true;
     Player *player= new Player(1, '@', PAIR_GREEN, 2, 2, 8, 10); // playerNum=1, spawn at (2,2)
     // g_entities.push_back(player);
-    Aster *aster = new Aster('O', PAIR_GREY, 20, 0, 60); // AsterNum=1, spawn at (2,2)
+    Aster *aster = new Aster('O', PAIR_GREEN, 20, 0, 60); // AsterNum=1, spawn at (2,2)
     aster->setVel(0, 1);
     // g_entities.push_back(aster);
     Enemy *enemy = new Enemy('W', PAIR_MAGENTA, 10, 0, 24, 5, 10);
     (void)enemy;
     // g_entities.push_back(enemy);
+    Background *star = new Background(ACS_BULLET, PAIR_DEF, 30, 0, 60); // BackgroundNum=1, spawn at (2,2)
+    star->setVel(0, 1);
 
 	vector<vector<AEntity*>*> groups = {
         &g_players, &g_enemies, &g_bullets, &g_asteroids

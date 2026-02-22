@@ -68,20 +68,13 @@ void Player::shoot()
     // Bullet updateInterval = 4 (updates every 4 frames ~= 16 times/sec at 60fps)
 }
 
-void Player::render(WINDOW *win) const
+void	Player::render(WINDOW *win) const
 {
-    if (has_colors() != FALSE)
-	{
-        start_color();
-        use_default_colors();   // permette di usare -1 come colore di default
+    int color = getColor();
 
-        init_pair(1, COLOR_MAGENTA, -1);
-
-        wattron(win, COLOR_PAIR(1));
-        mvwaddch(win, getPosY(), getPosX(), getEntityChar());
-        wattroff(win, COLOR_PAIR(1));
-	}
-    // Handle collision with other entities (e.g., enemies, power-ups)
+	wattron(win, COLOR_PAIR(color));
+	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
+	wattroff(win, COLOR_PAIR(color));
 }
 
 void Player::onCollision(AEntity &other) 

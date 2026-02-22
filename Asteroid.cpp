@@ -1,5 +1,6 @@
 #include "Asteroid.hpp"
 
+
 extern vector<AEntity*> g_asteroids;
 
 Aster::Aster()
@@ -34,7 +35,6 @@ void	Aster::update(float deltaTime)
 void	Aster::render(WINDOW *win) const
 {
     int color = getColor();
-    
 
 	wattron(win, COLOR_PAIR(color));
 	mvwaddch(win, getPosY(), getPosX(), getEntityChar());
