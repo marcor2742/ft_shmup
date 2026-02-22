@@ -44,6 +44,11 @@ void	Bullet::update(float deltaTime)
     int nx = getPosX() + getVelX();
     int ny = getPosY() + getVelY();
     setPos(nx, ny);
+    if (!isPlayerBullet && getPosY() > 50) { // if player bullet goes off screen, kill it
+		kill();
+	} else if (getPosY() < 0) {
+		kill();
+	}
 }
 
 void	Bullet::render(WINDOW *win) const

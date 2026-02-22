@@ -36,9 +36,9 @@ void	Enemy::update(float deltaTime)
 	if (rand() % 20 == 0) {
 		shoot();
 	}
-	// if (getPosY() > 50) { // if enemy goes off screen, kill it
-	// 	kill();
-	// }
+	if (getPosY() > 50) { // if enemy goes off screen, kill it
+		kill();
+	}
 }
 
 void	Enemy::render(WINDOW *win) const

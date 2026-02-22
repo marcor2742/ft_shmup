@@ -44,8 +44,7 @@ vector<AEntity*> g_background;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-// divisione bullet nemici dai bullet player
-// cancellazzione dei nemici se escono dallo schermo
+//renderizzare sfondo prima e tutto il resto dopo
 // enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
 // controlla multiplayer, frecce direzionali non funzionano
 
