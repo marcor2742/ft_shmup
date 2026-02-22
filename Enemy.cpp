@@ -2,16 +2,19 @@
 #include "Bullet.hpp"
 #include <vector>
 
-extern vector<AEntity*> g_entities;
-// extern vector<AEntity*> g_enemies;
+extern vector<AEntity*> g_enemies;
 
 Enemy::Enemy(Enemy const &src)
 	: AEntity(src)
-{}
+{
+	// g_enemies.push_back(this); copia?
+}
 
 Enemy::Enemy(char entityChar, int color, int x, int y, int updateInterval, int health, int scoreValue)
 	: AEntity(entityChar, color, x, y, updateInterval, health, scoreValue)
-{}
+{
+	g_enemies.push_back(this);
+}
 
 Enemy::~Enemy() {}
 
@@ -43,6 +46,4 @@ void	Enemy::shoot()
 	Bullet *b = new Bullet();
     b->setPos(getPosX(), getPosY() + 1);
     b->setVel(0, +1); // shoot upwards
-    g_entities.push_back(b);
-	// g_enemies.push_back(b);
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include <ncurses.h>
 #include "colours.h"
+#include <vector>
 
 //init_color
 enum
