@@ -38,12 +38,11 @@ vector<AEntity*> g_bullets;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-// costruttori copia?
 // generazione random di nemici e asteroidi
 // cancellazzione dei nemici se escono dallo schermo
 // gestione del punteggio
 // gestione del game over
-// enemy con movimenti più complessi
+// enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
 // controlla multiplayer, frecce direzionali non funzionano
 
 void updateEntities(vector<AEntity*> &entities, int frame);
@@ -51,6 +50,7 @@ void deleteEntity(vector<AEntity*> &entities);
 void renderEntities(vector<AEntity*> &entities, WINDOW *win);
 void handleCollisions();
 void free_all_entities();
+void createRandomEntity();
 
 int main() {
     initscr();
@@ -98,6 +98,8 @@ int main() {
     };
     while (g_running) {
         auto frameStart = game_clock::now();
+
+        createRandomEntity(); // probabilità di spawnare un nemico ogni frame
 
         // size_t size = g_entities.size();
         // for (size_t i = 0; i < size; i++) {
@@ -160,6 +162,19 @@ int main() {
     delwin(winScore);
     curs_set(1);
     endwin();
+}
+
+void createRandomEntity() {
+    int r = rand() % 100;
+    if (r < 3) { // 5% chance to spawn an enemy
+        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        new Enemy('W', PAIR_MAGENTA, x, 0, 24, 5, 10);
+    }
+    if (r < 1) { // 2% chance to spawn an asteroid
+        int x = rand() % 38 + 1; // spawn within horizontal bounds
+        Aster *a = new Aster('O', PAIR_GREY, x, 0, 60);
+        a->setVel(0, 1); // move downwards
+    }
 }
 
 void updateEntities(vector<AEntity*> &entities, int frame) {
