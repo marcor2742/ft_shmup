@@ -68,6 +68,8 @@ int main() {
     int frame = 0;
     g_running = true;
     Player *player= new Player(1, '@', PAIR_YELLOW, w_game / 2, h_game - 4, 8, 10); // playerNum=1, spawn at (2,2)
+    int playerMaxHealth = player->getMaxHealth();
+    int playerScore = 0;
 
     createBackground(h_game, w_game);
     renderEntities(g_background, winGame);
@@ -108,6 +110,7 @@ int main() {
         mvwprintw(winScore, 2, 2, "time   %.1fs", (float)frame / FPS);
         mvwprintw(winScore, 3, 2, "score  %d", player->getScore());
         mvwprintw(winScore, 4, 2, "health %d/%d", player->getHealth(), player->getMaxHealth());
+        playerScore = player->getScore();
         wrefresh(winGame);
         wrefresh(winScore);
 
@@ -123,11 +126,14 @@ int main() {
     string gameOverMsg = "Game Over!";
     werase(winGame);
     mvwprintw(winGame, h_game / 2, w_game / 2 - gameOverMsg.length() / 2, "%s", gameOverMsg.c_str());
+    mvwprintw(winScore, 4, 2, "health 0/%d", playerMaxHealth);
     wrefresh(winGame);
-    int ch;
-    while ((ch = getch()) && ch != 'q' && ch != 27) {
-        ch = getch();
-    }
+    wrefresh(winScore);
+    nodelay(stdscr, FALSE); // blocca su getch finché non arriva un tasto
+    // int ch;
+    getch();
+    // while ((ch = getch()) != 'q' && ch != 27)
+    //     ;
 
     free_all_entities();
 
