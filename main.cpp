@@ -22,7 +22,11 @@ bool g_running = false;
 vector<AEntity*> g_asteroids;
 vector<AEntity*> g_enemies;
 vector<AEntity*> g_players;
-vector<AEntity*> g_bullets;
+
+// vector<AEntity*> g_bullets;
+vector<AEntity*> g_enemyBullets;
+vector<AEntity*> g_playerBullets;
+
 vector<AEntity*> g_background;
 
 // defined in ncurses
@@ -40,8 +44,7 @@ vector<AEntity*> g_background;
 //wasd: w=119, a=97, s=115, d=100
 // shoot (space and keypad 0): 32 and 48
 
-// gestione del punteggio
-// gestione del game over
+// divisione bullet nemici dai bullet player
 // cancellazzione dei nemici se escono dallo schermo
 // enemy con movimenti più complessi. metere un numero massimo e che possono anche alire.
 // controlla multiplayer, frecce direzionali non funzionano
@@ -106,7 +109,7 @@ int main() {
     wrefresh(winGame);
 
     vector<vector<AEntity*>*> groups = {
-        &g_players, &g_enemies, &g_bullets, &g_asteroids, &g_background
+        &g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids, &g_background
     };
     while (g_running) {
         auto frameStart = game_clock::now();
@@ -237,7 +240,7 @@ void renderEntities(vector<AEntity*> &entities, WINDOW *win) {
 
 void handleCollisions(Player &player) {
     // proiettili player vs nemici
-    for (auto *b : g_bullets)
+    for (auto *b : g_playerBullets)
         for (auto *e : g_enemies)
             if (b->getPosX() == e->getPosX() && b->getPosY() == e->getPosY()) 
 			{
@@ -249,7 +252,7 @@ void handleCollisions(Player &player) {
             }
 
     // proiettili nemici vs player
-    for (auto *b : g_bullets)
+    for (auto *b : g_enemyBullets)
         for (auto *p : g_players)
             if (b->getPosX() == p->getPosX() && b->getPosY() == p->getPosY())
 			{
@@ -276,10 +279,22 @@ void handleCollisions(Player &player) {
                     free_all_entities();
                 }
             }
+
+    // nemici vs player
+    for (auto *e : g_enemies)
+        for (auto *p : g_players)
+            if (e->getPosX() == p->getPosX() && e->getPosY() == p->getPosY())
+            {
+                p->takeDamage(1);
+                e->setAlive(false); // destroy enemy on collision
+                p->setAlive(false); // kill player on collision 
+                g_running = false;  // game over
+                free_all_entities();
+            }
 }
 
 void free_all_entities() {
-    for (auto group : {&g_players, &g_enemies, &g_bullets, &g_asteroids}) {
+    for (auto group : {&g_players, &g_enemies, &g_enemyBullets, &g_playerBullets, &g_asteroids}) {
         if (!group) continue;
         for (AEntity *e : *group)
             delete e;

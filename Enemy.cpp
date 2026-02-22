@@ -36,6 +36,9 @@ void	Enemy::update(float deltaTime)
 	if (rand() % 20 == 0) {
 		shoot();
 	}
+	// if (getPosY() > 50) { // if enemy goes off screen, kill it
+	// 	kill();
+	// }
 }
 
 void	Enemy::render(WINDOW *win) const
@@ -53,7 +56,7 @@ void	Enemy::onCollision(AEntity &other)
 
 void	Enemy::shoot()
 {
-	Bullet *b = new Bullet('*', PAIR_BR_GREEN);
+	Bullet *b = new Bullet(false, '*', PAIR_BR_GREEN);
     b->setPos(getPosX(), getPosY() + 1);
     b->setVel(0, +1); // shoot upwards
 }
